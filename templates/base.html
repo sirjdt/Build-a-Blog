@@ -5,13 +5,13 @@
   </head>
 
   <body>
-      <a href="/singletemplate">Main Page</a> 
+      <a href="/">Main Page</a> 
       <a href="/newpost">Add an Entry</a>
 
   {% with messages = get_flashed_messages(with_categories=True) %}
       <ul>
         {% for category,message in messages %}
-          <li class="{{category}}">{{message}}</li>
+          <li> class="{{category}}">{{message}}</li>
         {% endfor %}
       </ul>
   {% endwith %}  

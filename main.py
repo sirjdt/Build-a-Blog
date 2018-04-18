@@ -32,7 +32,7 @@ def blog():
 
     entries = Blog.query.all()
 
-    return render_template('blog.html', title="blog", entries=entries)
+    return render_template('blog.html', title=blog, entries=entries)
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
@@ -45,7 +45,7 @@ def newpost():
         if new_blog.validate():
             db.session.add(new_blog)
             db.session.commit()
-            url = "/blog?id=" + str(new_blog.id)
+            url = "/singletemplate?id=" + str(new_blog.id)
             return redirect(url)
         else:
             flash("Invalid blog post")

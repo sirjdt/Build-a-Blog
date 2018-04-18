@@ -6,12 +6,13 @@
 
 
   <ul>
-    {%for blog in entries %}
+    {% for blog in entries %}
         <li>
-          <a href="/singletemplate?id={{blog.id}}">{{entries.title}}</a>
-          {{blog.body}}
+          <a href="/singletemplate?id= {{blog.id}}">{{ blog.title }}</a>
+          {{ blog.body }}
           <input type="hidden" name="blog-id" value="{{blog.id}}"/>
         </li>
+      </form>
     {% endfor %}
   </ul>
 
