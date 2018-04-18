@@ -2,11 +2,18 @@
 <html>
   <head>
     <title>Build a Blog</title>
+    <style>
+      .error {
+          color: red;
+      }
+  </style>    
   </head>
 
   <body>
       <a href="/">Main Page</a> 
       <a href="/newpost">Add an Entry</a>
+
+
 
   {% with messages = get_flashed_messages(with_categories=True) %}
       <ul>

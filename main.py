@@ -47,9 +47,14 @@ def newpost():
             db.session.commit()
             url = "/singletemplate?id=" + str(new_blog.id)
             return redirect(url)
+        if blog_title == '':
+            title_error = "error"
+        if blog_body == '':
+            blog_error = "error"
+        if title_error or blog_error == '':
+            return render_template('/')
         else:
-            flash("Invalid blog post")
-            return render_template('newpost.html', blog_name=blog_name, blog_body=blog_body)
+            return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body)
     else:
         return render_template('newpost.html')
 
