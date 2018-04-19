@@ -45,19 +45,18 @@ def newpost():
         if new_blog.validate():
             db.session.add(new_blog)
             db.session.commit()
-            url = "/singletemplate?id=" + str(new_blog.id)
-            return redirect(url)
+            return redirect("/singletemplate?id=" + str(new_blog.id))
         if blog_title == '':
             title_error = "error"
         if blog_body == '':
             blog_error = "error"
-        if title_error or blog_error == '':
-            return render_template('/')
+        if title_error == blog_error == '':
+            return redirect("/blog?id={}".format(blog_id))
         else:
-            return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body)
+            return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body, title_error=title_error, blog_error=blog_error)
+
     else:
         return render_template('newpost.html')
-
 
 
 @app.route('/singletemplate', methods=['GET'])
