@@ -47,9 +47,11 @@ def newpost():
             db.session.commit()
             return redirect("/singletemplate?id=" + str(new_blog.id))
         if blog_title == '':
-            title_error = "error"
-        if blog_body == '':
-            blog_error = "error"
+            flash('error')
+            return render_template('newpost.html', blog_body=blog_body)
+        elif blog_body == '':
+            flash('error')
+            return render_template('newpost.html', blog_title=blog_title)
         if title_error == blog_error == '':
             return redirect("/blog?id={}".format(blog_id))
         else:
