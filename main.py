@@ -41,22 +41,25 @@ def newpost():
         blog_title = request.form['blog']
         blog_body = request.form['body']
         new_blog = Blog(blog_title, blog_body)
+        title_error = ''
+        blog_error = ''
 
         if new_blog.validate():
             db.session.add(new_blog)
             db.session.commit()
             return redirect("/singletemplate?id=" + str(new_blog.id))
         if blog_title == '':
-            flash('error')
-            return render_template('newpost.html', blog_body=blog_body)
-        elif blog_body == '':
-            flash('error')
+            flash("Please enter a title", 'error')
+            # return render_template('newpost.html', blog_body=blog_body)
+        if blog_body == '':
+            flash("Please enter a blog post", 'error')
             return render_template('newpost.html', blog_title=blog_title)
-        if title_error == blog_error == '':
-            return redirect("/blog?id={}".format(blog_id))
+        if title_error == '' or blog_error == '':
+            flash("Please enter a blog title", 'error')
+            return render_template('newpost.html', blog_title=blog_title)
         else:
-            return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body, title_error=title_error, blog_error=blog_error)
-
+            return redirect("/blog?id={}".format(blog_id))
+        
     else:
         return render_template('newpost.html')
 
