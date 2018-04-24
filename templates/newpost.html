@@ -11,8 +11,8 @@
 
   {% with messages = get_flashed_messages(with_categories=True) %}
       <ul>
-        {% for error,message in messages %}
-          <li class="{{error}}"><span>{{message}}</span></li>
+        {% for error, message in messages %}
+          <li class="{{error}}">{{message}}</li>
         {% endfor %}
       </ul>
   {% endwith %}  
