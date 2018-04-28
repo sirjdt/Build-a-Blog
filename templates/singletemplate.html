@@ -1,8 +1,9 @@
 {% extends "base.html" %}
-
 {% block content %}
-
-    <h1>{{ entries.title }}</h1>
-    <p>{{ entries.body }}</p>
+<h1>{{post.title}}</h1>
+<br/>
+<p>{{post.body}}</p>
+<br/>
+Author: {{post.owner.username}}
 
 {% endblock %}

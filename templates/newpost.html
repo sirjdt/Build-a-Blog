@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<h1>Build a Blog Post</h1>
-<form method='post'>
+<h1>Add a Blog Post</h1>
+<form method='POST' id="blog">
   <label> New Title <input type="text" name="blog" value='{{blog_title}}' /></label><p class="error">{{title_error}}</p><br/>
   <label> New Blog <textarea type="text" name="body" value='{{blog_body}}' ></textarea></label><p class="error">{{blog_error}}</p><br/>
   <input type="submit" value="Add" />
