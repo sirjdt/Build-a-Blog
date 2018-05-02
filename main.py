@@ -1,7 +1,5 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
-import os
-import cgi
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -9,7 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:blogz@localhost:8
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = '|z\xa0!\xc0n\xb6\x86J\xc9G\xaa\r\x06R5 Y\xdf\x19\xba*\xde\xcd'
-
 
 class Blog(db.Model):
 
@@ -22,12 +19,6 @@ class Blog(db.Model):
         self.title = title
         self.body = body
         self.owner = owner
-        
-    def validate(self):
-        if self.title and self.body and self.owner:
-            return True
-        else:
-            return False
 
 class User(db.Model):
 
@@ -57,8 +48,8 @@ def blog():
     blogs = Blog.query.all()
     blog_id=request.args.get('id')
     if blog_id:
-        new_post = Blog.query.get(blog_id)
-        return render_template('singletemplate.html', blogs=blogs, post=new_post)
+        post = Blog.query.get(blog_id)
+        return render_template('singletemplate.html', blogs=blogs, post=post)
 
     else:
         return render_template('blog.html', blogs=blogs)
@@ -67,14 +58,17 @@ def blog():
 def newpost():
 
     if request.method == 'GET':
-        return render_template('newpost.html', title="Create New Post")
+        return render_template('newpost.html')
 
 
     if request.method == 'POST':
-        blog_title = request.form.get('title', False)
-        blog_body = request.form.get('body', False)
+        blog_title = request.form.get('title')
+        blog_body = request.form.get('body')
         owner = User.query.filter_by(username=session['username']).first()
-        new_blog = Blog(blog_title, blog_body, owner)
+        newblog = Blog(blog_title, blog_body, owner)
+        db.session.add(newblog)
+        db.session.commit()
+        newblogid = newblog.id
         title_error = ''
         blog_error = ''
         
@@ -82,14 +76,11 @@ def newpost():
             flash("Please enter a title", 'error')
         if blog_body == '':
             flash("Please enter a blog post", 'error')
-            return render_template('newpost.html', blog_title=blog_title)
+            return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body)
         if title_error == '' or blog_error == '':
-            return redirect("/blog?id={}".format(blog_id))
+            return redirect("/blog?id={}".format(newblogid))
         else:    
             return render_template('newpost.html', blog_title=blog_title, blog_body=blog_body, title_error=title_error, blog_error=blog_error)
-       
-    else:
-        return render_template('newpost.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -101,47 +92,49 @@ def login():
             session['username'] = username
             return redirect('/newpost')
         else:
-            flash('Error!')
+            flash("Error!", 'error')
 
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('/')
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     username_error = ''
     password_error = ''
-    passwordverify = ''
+    passwordverify_error = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         passwordverify = request.form['passwordverify']
 
-    if username == '':
-        username_error = "That's not a valid username"
-    elif len(username) > 20 or len(username) < 3 or ' ' in username:
-        username_error = "That's not a vaild username"
 
-    if password == '':
-        password_error = "That's not a valid password"
-    elif len(password) > 20 or len(password) < 3 or ' ' in password:
-        password_error = "That's not a vaild password"
+        if username == '':
+            username_error  = "Invalid username"
+        elif len(username) > 20 or len(username) < 3 or ' ' in username:
+            username_error  = "That's not a valid username"
 
-    if passwordverify == '':
-        passwordverify_error = "That's not a valid password"
-    elif passwordverify != password:
-        passwordverify_error = "That's not a valid password"
+        if password == '':
+            password_error = "Invalid password"
+        elif len(password) > 20 or len(password) < 3 or ' ' in password:
+            password_error = "Invalid password"
 
-        if username_error == passwordverify == password_error == '':
+        if passwordverify != password or len(passwordverify) < 3:
+            passwordverify_error = "Passwords do not match"
+
+        if username_error  == passwordverify_error == password_error == '':
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
 
             return redirect('/newpost')
-        return render_template('signup.html', username_error=username_error, password_error=password_error,
-                               passwordverify=passwordverify, username=username)
+        return render_template('signup.html', username_error =username_error , password_error=password_error,
+                               passwordverify_error=passwordverify_error, username=username)
     return render_template('signup.html')
-
-
 
 @app.route('/singletemplate', methods=['GET'])
 def singletemplate():
@@ -150,13 +143,6 @@ def singletemplate():
     post = Blog.query.filter_by(id=blog_id).first()
 
     return render_template('singletemplate.html', post=post)
-
-
-@app.route('/logout')
-def logout():
-    del session['username']
-    return redirect('/')
-
 
 if __name__ == "__main__":
     app.run()

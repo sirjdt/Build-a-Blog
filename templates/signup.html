@@ -4,23 +4,19 @@
 
 	<h1>Signup</h1>
     <form method="post">
-        <table><tr><td><label for="username">Username</label></td>
-                <td>
-                    <input name="username" value="{{username}}" type="text" />
-                    <span class="error">{{username_error}}</span>
-                </td></tr>
-                <tr><td><label for="password">Password</label></td>
-                <td>
-                    <input name="password" type="password" />
-                    <span class="error">{{password_error}}</span>
-                </td></tr>
-                <tr><td>
-                    <label for="passwordverify">Verify Passsword</label>
-                </td><td>
-                    <input name="passwordverify" type="password" />
-                    <span class="error">{{passwordverify_error}}</span>
-                </td></tr>
-        </table>
+
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" value="{{username}}"/>
+        <p class="error">{{username_error}}</p>
+
+        <label for="password">Password</label>
+        <input id="password" type="text" name="password"/>
+        <p class="error">{{password_error}}</p>
+
+        <label for="passwordverify">Verify Password</label>
+        <input id="passwordverify" type="text" name="passwordverify"/>
+        <p class="error">{{passwordverify_error}}</p>
+
         <input type="submit" value="Submit" />
 </form>
 
